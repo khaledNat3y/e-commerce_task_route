@@ -4,20 +4,18 @@ import 'package:route_task/core/helpers/spacing.dart';
 import 'package:route_task/core/theming/app_colors.dart';
 import 'package:route_task/core/theming/app_theme.dart';
 
+import '../../data/model/product_response.dart';
 import 'custom_add_product_button.dart';
 
 class ProductWidget extends StatefulWidget {
-  final String productImage;
-  final String productName;
-  final double price;
-  final double rating;
-
+  // final String productImage;
+  // final String productName;
+  // final double price;
+  // final double rating;
+  // final ProductResponse productsList;
+  final Products products;
   const ProductWidget(
-      {super.key,
-      required this.productImage,
-      required this.productName,
-      required this.price,
-      required this.rating});
+      {super.key, required this.products,});
 
   @override
   State<ProductWidget> createState() => _ProductWidgetState();
@@ -37,7 +35,10 @@ class _ProductWidgetState extends State<ProductWidget> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(widget.productImage),
+            Container(
+              width: 200.w,
+                height: 200.h,
+                child: Image.network(widget.products.images![0])),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
@@ -45,41 +46,45 @@ class _ProductWidgetState extends State<ProductWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.productName,
+                      widget.products.title ?? "title",
                       style: AppTheme.font16BlueRegular,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    verticalSpace(8),
                     Row(
                       children: [
-                        Text(
-                          "EGP ${widget.price}",
-                          style: AppTheme.font16BlueRegular,
+                        Expanded(
+                          child: Text(
+                            "EGP ${widget.products.price}",
+                            style: AppTheme.font16BlueRegular,
+                          ),
                         ),
                         horizontalSpace(10),
-                        Text(
-                          "2000EGP",
-                          style:
-                              TextStyle(decoration: TextDecoration.lineThrough)
-                                  .copyWith(
-                                      color: AppColors.primaryColor
-                                          .withOpacity(0.6)),
+                        Expanded(
+                          child: Text(
+
+                            "${(widget.products.price! / (1 - (widget.products.discountPercentage!.toDouble() / 100))).toStringAsFixed(2)}EGP",
+                            style: const TextStyle(decoration: TextDecoration.lineThrough)
+                                .copyWith(color: AppColors.primaryColor.withOpacity(0.6)),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),
-                    verticalSpace(8),
+                    verticalSpace(16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
                             Text(
-                              "Review (${widget.rating})",
+                              "Review (${widget.products.rating})",
                               style: AppTheme.font16BlueRegular,
                             ),
                             Image.asset("assets/images/star.png"),
                           ],
                         ),
-                        CustomAddProductButton(),
+                        const CustomAddProductButton(),
                       ],
                     ),
                   ],
