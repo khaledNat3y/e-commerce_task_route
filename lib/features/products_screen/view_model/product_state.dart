@@ -14,9 +14,15 @@ class ProductSuccess extends ProductState{
   ProductSuccess({required this.productResponse});
 }
 
-//Failure
+// Failure state
 class ProductFailure extends ProductState{
   final String error;
   ProductFailure({required this.error});
+}
 
+// Search success state
+class ProductSearchSuccess extends ProductState {
+  final List<Products> products;
+
+  ProductSearchSuccess(this.products);
 }
