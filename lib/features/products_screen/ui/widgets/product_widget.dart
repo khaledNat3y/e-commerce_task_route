@@ -1,23 +1,20 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:route_task/core/helpers/spacing.dart';
 import 'package:route_task/core/theming/app_colors.dart';
 import 'package:route_task/core/theming/app_theme.dart';
 
+import '../../data/model/product_response.dart';
+import '../../../../core/widgets/app_loader.dart';
 import 'custom_add_product_button.dart';
 
 class ProductWidget extends StatefulWidget {
-  final String productImage;
-  final String productName;
-  final double price;
-  final double rating;
-
+  final Products products;
   const ProductWidget(
-      {super.key,
-      required this.productImage,
-      required this.productName,
-      required this.price,
-      required this.rating});
+      {super.key, required this.products,});
 
   @override
   State<ProductWidget> createState() => _ProductWidgetState();
@@ -29,94 +26,96 @@ class _ProductWidgetState extends State<ProductWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.primaryColor),
       ),
-      child: Stack(children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(children: [
+        Stack(
+           alignment: Alignment.topRight,
           children: [
-            Image.asset(widget.productImage),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.productName,
-                      style: AppTheme.font16BlueRegular,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "EGP ${widget.price}",
-                          style: AppTheme.font16BlueRegular,
-                        ),
-                        horizontalSpace(10),
-                        Text(
-                          "2000EGP",
-                          style:
-                              TextStyle(decoration: TextDecoration.lineThrough)
-                                  .copyWith(
-                                      color: AppColors.primaryColor
-                                          .withOpacity(0.6)),
-                        ),
-                      ],
-                    ),
-                    verticalSpace(8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Review (${widget.rating})",
-                              style: AppTheme.font16BlueRegular,
-                            ),
-                            Image.asset("assets/images/star.png"),
-                          ],
-                        ),
-                        CustomAddProductButton(),
-                      ],
-                    ),
-                  ],
+            CachedNetworkImage(
+              imageUrl: widget.products.images![0],
+              placeholder: (_, __) => const AppLoader(),
+              errorWidget: (_, __, ___) => const Icon(Icons.error),
+              width: double.infinity,
+              fit: BoxFit.cover,
+              height: MediaQuery.of(context).size.height * .16,
+            ),
+            Positioned(
+              top: 5,
+              right: 5,
+              child: CircleAvatar(
+                radius: 16,
+                backgroundColor: AppColors.white,
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      setState(() {
+                        isSelected = !isSelected;
+                      });
+                    });
+                  },
+                  isSelected: isSelected,
+                  icon: isSelected
+                      ? Image.asset(
+                    "assets/images/heart_selected.png",
+                    width: 19.w,
+                    height: 18.h,
+                  )
+                      : Image.asset(
+                    "assets/images/heart.png",
+                    width: 19.w,
+                    height: 18.h,
+                  ),
                 ),
               ),
             ),
           ],
+
         ),
-        Positioned(
-          top: 5,
-          right: 5,
-          child: CircleAvatar(
-            radius: 16,
-            backgroundColor: AppColors.white,
-            child: IconButton(
-              onPressed: () {
-                setState(() {
-                  setState(() {
-                    isSelected = !isSelected;
-                  });
-                });
-              },
-              isSelected: isSelected,
-              icon: isSelected
-                  ? Image.asset(
-                      "assets/images/heart_selected.png",
-                      width: 19.w,
-                      height: 18.h,
-                    )
-                  : Image.asset(
-                      "assets/images/heart.png",
-                      width: 19.w,
-                      height: 18.h,
-                    ),
+        Spacer(),
+        Text(
+          widget.products.title ?? "title",
+          style: AppTheme.font16BlueRegular,
+          overflow: TextOverflow.ellipsis,
+        ),
+        Spacer(),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                "EGP ${widget.products.price}",
+                style: AppTheme.font16BlueRegular,
+              ),
             ),
-          ),
+            Text(
+
+              "${(widget.products.price! / (1 - (widget.products.discountPercentage!.toDouble() / 100))).toStringAsFixed(2)}EGP",
+              style: const TextStyle(decoration: TextDecoration.lineThrough,fontSize: 12)
+                  .copyWith(color: AppColors.primaryColor.withOpacity(0.6),),
+
+            ),
+          ],
         ),
+        verticalSpace(10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(children: [
+              Text(
+                "Review (${widget.products.rating})",
+                style: AppTheme.font16BlueRegular,
+              ),
+              Image.asset("assets/images/star.png"),
+            ],),
+            const CustomAddProductButton(),
+          ],
+        ),
+
+
       ]),
     );
   }
