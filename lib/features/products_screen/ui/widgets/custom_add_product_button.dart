@@ -18,12 +18,25 @@ class _CustomAddProductButtonState extends State<CustomAddProductButton> {
       width: 40.w,
       height: 40.h,
       child: FloatingActionButton(
-        onPressed: (){
-        setState(() {
-          isSelected = !isSelected;
-        });
-      }, backgroundColor: AppColors.primaryColor,
-        child: isSelected ? const Icon(Icons.delete_outline, color: AppColors.white, size: 32,) : Icon(Icons.add, color: AppColors.white, size: 32,),),
+        onPressed: () {
+          setState(() {
+            isSelected = !isSelected;
+          });
+        },
+        backgroundColor: AppColors.primaryColor,
+        elevation: 0,
+        child: isSelected
+            ? const Icon(
+                Icons.delete_outline,
+                color: AppColors.white,
+                size: 32,
+              )
+            : Icon(
+                Icons.add,
+                color: AppColors.white,
+                size: 32,
+              ),
+      ),
     );
   }
 }

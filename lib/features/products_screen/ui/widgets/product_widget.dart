@@ -75,39 +75,39 @@ class _ProductWidgetState extends State<ProductWidget> {
           ],
 
         ),
-        Spacer(),
+        const Spacer(),
         Text(
           widget.products.title ?? "title",
-          style: AppTheme.font16BlueRegular,
-          overflow: TextOverflow.ellipsis,
+          style: AppTheme.font16BlueRegular.copyWith(color: AppColors.textColor),
+
         ),
-        Spacer(),
+        verticalSpace(5),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Text(
                 "EGP ${widget.products.price}",
-                style: AppTheme.font16BlueRegular,
+                style: AppTheme.font16BlueRegular.copyWith(color: AppColors.textColor),
               ),
             ),
             Text(
 
               "${(widget.products.price! / (1 - (widget.products.discountPercentage!.toDouble() / 100))).toStringAsFixed(2)}EGP",
               style: const TextStyle(decoration: TextDecoration.lineThrough,fontSize: 12)
-                  .copyWith(color: AppColors.primaryColor.withOpacity(0.6),),
+                  .copyWith(color: AppColors.descriptionColor.withOpacity(0.6),),
 
             ),
           ],
         ),
-        verticalSpace(10),
+        verticalSpace(5),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(children: [
               Text(
                 "Review (${widget.products.rating})",
-                style: AppTheme.font16BlueRegular,
+                style: AppTheme.font16BlueRegular.copyWith(color: AppColors.textColor),
               ),
               Image.asset("assets/images/star.png"),
             ],),
